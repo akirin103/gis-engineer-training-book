@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<head>
+  <title>Circle</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    crossorigin=""
+  />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin="">
+  </script>
+</head>
+<body>
+  <div id="map" style="height: 80vh;"></div>
+  <script>
+    const map = L.map(
+      'map', 
+      {
+        center: [35.3627808, 138.7307908], // 富士山
+        zoom: 14, // 初期ズームレベル
+      }
+    );
+    // 背景レイヤー
+    // 地理院タイルの空中写真
+    // https://maps.gsi.go.jp/development/ichiran.html
+    const backgroundLayer = L.tileLayer(
+      'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', // 地理院タイルの空中写真のURLテンプレート
+      {
+        maxZoom: 17,
+        attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a> Contributors'
+      }
+    );
+    map.addLayer(backgroundLayer);
+
+    L.circle([35.3627808, 138.7307908], {
+      color: 'yellow',
+      fillColor: '#ff0000',
+      fillOpacity: 0.3,
+      radius: 1000,
+    })
+      .bindPopup('I am Circle!')
+      .addTo(map);
+  </script>
+</body>

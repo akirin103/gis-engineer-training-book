@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<head>
+  <title>Pin GeoJson</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    crossorigin=""
+  />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin="">
+  </script>
+</head>
+<body>
+  <div id="map" style="height: 80vh;"></div>
+  <script>
+    const map = L.map(
+      'map', 
+      {
+        center: [36.5, 137.1], // 初期表示の地図の中心の[緯度、経度]
+        zoom: 5, // 初期ズームレベル
+      }
+    );
+    // 背景レイヤー
+    const backgroundLayer = L.tileLayer(
+      'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMのURLテンプレート
+      {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> Contributors'
+      }
+    );
+    map.addLayer(backgroundLayer);
+
+    // 世界測地系
+    // VLBIや人工衛星を用いた観測によって明らかとなった地球の正確な形状と大きさに基づき、
+    // 世界的な整合性を持たせて構築された経度・緯度の測定の基準で、国際的に定められている測地基準系をいいます。
+
+    // 国土数値情報 - 学校データより東京都のデータをgeojsonファイルから読み込む
+    fetch('./geojson/P29-21_13.geojson')
+      .then((res) => res.json())
+      .then((json) => {
+        L.geoJSON(json)
+          .bindPopup((layer) => layer.feature.properties.P29_004)
+          .addTo(map);
+      });
+  </script>
+</body>

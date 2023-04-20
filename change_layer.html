@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<head>
+  <title>Change Layer</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    crossorigin=""
+  />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin="">
+  </script>
+</head>
+<body>
+  <div id="map" style="height: 80vh;"></div>
+  <script>
+    const map = L.map(
+      'map', 
+      {
+        center: [36.5, 137.1], // 初期表示の地図の中心の[緯度、経度]
+        zoom: 5, // 初期ズームレベル
+      }
+    );
+    // 背景地図データ
+    const baseLayers = {
+      OpenStreetMap: L.tileLayer(
+        'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMのURLテンプレート
+        {
+          maxZoom: 19,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> Contributors'
+        }
+      ),
+      地理院地図: L.tileLayer(
+        'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', // 地理院タイルのベースマップのURLテンプレート
+        {
+          maxZoom: 18,
+          attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>'
+        }
+      ), 
+      空中写真: L.tileLayer(
+        'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', // 地理院タイルの空中写真のURLテンプレート
+        {
+          maxZoom: 17,
+          attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>'
+        }
+      ),
+    };
+    map.addLayer(baseLayers['OpenStreetMap']);
+    const layersControl = L.control
+      .layers(baseLayers, [], { collapsed: false })
+      .addTo(map);
+  </script>
+</body>

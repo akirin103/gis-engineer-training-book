@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<head>
+  <title>MarkerCluster</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    crossorigin=""
+  />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin="">
+  </script>
+
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"
+  />
+
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css"
+  />
+
+  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js "></script>
+</head>
+<body>
+  <div id="map" style="height: 80vh;"></div>
+  <script>
+    const map = L.map(
+      'map', 
+      {
+        center: [36.5, 137.1], // 初期表示の地図の中心の[緯度、経度]
+        zoom: 5, // 初期ズームレベル
+      }
+    );
+    // 背景レイヤー
+    const backgroundLayer = L.tileLayer(
+      'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMのURLテンプレート
+      {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> Contributors'
+      }
+    );
+    map.addLayer(backgroundLayer);
+
+    // 世界測地系
+    // VLBIや人工衛星を用いた観測によって明らかとなった地球の正確な形状と大きさに基づき、
+    // 世界的な整合性を持たせて構築された経度・緯度の測定の基準で、国際的に定められている測地基準系をいいます。
+
+    // 国土数値情報 - 学校データより全国のデータをgeojsonファイルから読み込む
+
+    fetch('./geojson/P29-21.geojson')
+      .then((res) => res.json())
+      .then((json) => {
+        // 非常に多くのピンを表示することは困難なため、クラスタリングによって表示する要素数を減らす
+        // 位置情報アプリ開発では通信量やデータ処理、描画のパフォーマンスに注意
+        const markers = L.markerClusterGroup()
+          .bindPopup((layer) => layer.feature.properties.P29_004)
+          .addTo(map);
+        L.geoJSON(json).addTo(markers);
+      });
+  </script>
+</body>
