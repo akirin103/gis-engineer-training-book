@@ -24,21 +24,21 @@
     );
     // 背景地図データ
     const baseLayers = {
-      OpenStreetMap: L.tileLayer(
+      'OpenStreetMap': L.tileLayer(
         'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMのURLテンプレート
         {
           maxZoom: 19,
           attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> Contributors'
         }
       ),
-      地理院地図: L.tileLayer(
+      '地理院地図': L.tileLayer(
         'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', // 地理院タイルのベースマップのURLテンプレート
         {
           maxZoom: 18,
           attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>'
         }
       ), 
-      空中写真: L.tileLayer(
+      '空中写真': L.tileLayer(
         'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', // 地理院タイルの空中写真のURLテンプレート
         {
           maxZoom: 17,

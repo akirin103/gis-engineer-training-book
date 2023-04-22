@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<head>
+  <title>Railway</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    crossorigin=""
+  />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin="">
+  </script>
+</head>
+<body>
+  <div id="map" style="height: 80vh;"></div>
+  <script>
+    const map = L.map(
+      'map', 
+      {
+        center: [36.5, 137.1], // 初期表示の地図の中心の[緯度、経度]
+        zoom: 5, // 初期ズームレベル
+      }
+    );
+    // 背景地図データ
+    const baseLayers = {
+      OpenStreetMap: L.tileLayer(
+        'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMのURLテンプレート
+        {
+          maxZoom: 19,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> Contributors'
+        }
+      ),
+      地理院地図: L.tileLayer(
+        'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', // 地理院タイルのベースマップのURLテンプレート
+        {
+          maxZoom: 18,
+          attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>'
+        }
+      ), 
+      空中写真: L.tileLayer(
+        'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', // 地理院タイルの空中写真のURLテンプレート
+        {
+          maxZoom: 17,
+          attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>'
+        }
+      ),
+    };
+    map.addLayer(baseLayers['OpenStreetMap']);
+    const layersControl = L.control
+      .layers(baseLayers, [], { collapsed: false })
+      .addTo(map);
+
+    const colorDict = {
+      1: 'green',
+      2: 'blue',
+      3: 'orange',
+      4: 'purple',
+    };
+
+    const weightDict = {
+      1: 10,
+      2: 7,
+      3: 4,
+      4: 4,
+      5: 4,
+    };
+
+    fetch('./geojson/N02-21_RailroadSection.geojson') // 鉄道データ
+      .then((res) => res.json())
+      .then((json) => {
+        // geoJSONレイヤーを作成
+        const line = L.geoJSON(json, {
+          style: (feature) => ({
+            weight: weightDict[feature.properties.N02_002], // 事業者種別コードから線の太さを得る
+            color: colorDict[feature.properties.N02_002], // 事業者種別コードから線の色を得る
+          })
+        })
+          .bindPopup((layer) =>
+            layer.feature.properties.N02_004 +
+            '<br />' +
+            layer.feature.properties.N02_003
+          )
+          .addTo(map);
+
+        layersControl.addOverlay(line, '鉄道データ');
+      });
+
+    fetch('./geojson/A16-15_00_DID.geojson') // 人口集中地区データ
+      .then((res) => res.json())
+      .then((json) => {
+        // geoJSONレイヤーを作成
+        const polygon = L.geoJSON(json, {
+          style: (feature) => ({
+            color: 'red',
+            stroke: false,
+            // 人口を面積で割った値でポリゴンの濃さを変える
+            fillOpacity:
+              feature.properties['人口'] /
+              feature.properties['面積'] /
+              20000,
+          })
+        })
+          .bindPopup((layer) => '人口: ' + layer.feature.properties['人口'])
+          .addTo(map);
+        // コロプレス図: 色を塗り分けたポリゴンを重ねた地図
+        // 背景レイヤはいくつかあるうちの1つを表示する
+        // オーバーレイは任意の数を重ねて表示可能
+        layersControl.addOverlay(polygon, '人口集中地区');
+      });
+  </script>
+</body>
