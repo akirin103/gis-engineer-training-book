@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>leaflet image raster</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    crossorigin=""
+  />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin="">
+  </script>
+  </head>
+  <body>
+    <div id="map" style="height: 80vh"></div>
+    <script>
+      const map = L.map('map', {
+          center: [35.3627808, 138.7307908],
+          zoom: 12,
+      });
+      const backgroundLayer = L.tileLayer(
+          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          {
+              maxZoom: 19,
+              attribution:
+                  '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          },
+      );
+      map.addLayer(backgroundLayer);
+      const imageLayer = L.imageOverlay(
+        './assets/mtfuji.jpg',
+        [
+            [35.2906143398424206, 138.6212919295209929],
+            [35.4299751815481514, 138.8426007912885041],
+        ],
+        { opacity: 0.7 },
+      );
+      map.addLayer(imageLayer);
+      // 出典表示を追加
+      map.attributionControl.addAttribution(
+          '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>',
+      );
+    </script>
+  </body>
+</html>

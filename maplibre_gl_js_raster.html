@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>maplibre gl js raster</title>
+    <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+    <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
+  </head>
+  <body>
+    <div id="map" style="height: 80vh"></div>
+    <script>
+      // Maplibreのスタイルについて
+      // https://maplibre.org/maplibre-style-spec/
+      // {
+      //   "version": 8,
+      //   "name": "MapLibre Demo Tiles",
+      //   "sprite": "mapbox://sprites/mapbox/streets-v8",
+      //   "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+      //   "sources": {... },
+      //   "layers": [...]
+      // }
+
+      const map = new maplibregl.Map({
+        container: 'map',
+        center: [137.1, 36.5],
+        zoom: 4,
+        style: {
+          version: 8,
+          sources: {
+            osm: {
+              type: 'raster', // ラスタータイル
+              tiles: [
+                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              ],
+              tileSize: 256,
+              maxzoom: 19,
+              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            },
+            lakebiwa: {
+              type: 'image',
+              url: './assets/lakebiwa.jpg',
+              coordinates: [
+                [135.596438368833077, 35.5498836025608185], // 左上
+                [136.5823028110609414, 35.5498836025608185], // 右上
+                [136.5823028110609414, 34.9281476305997742], // 右下
+                [135.596438368833077, 34.9281476305997742], // 左下
+              ],
+            }
+          },
+          layers: [
+            {
+              id: 'osm-layer',
+              source: 'osm',
+              type: 'raster'
+            },
+            {
+              id: 'lakebiwa-layer',
+              source: 'lakebiwa',
+              type: 'raster',
+              paint: {
+                'raster-opacity': 0.7,
+              },
+            }
+          ]
+        }
+      });
+    </script>
+  </body>
+</html>

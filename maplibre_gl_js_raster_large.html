@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>maplibre gl js raster</title>
+    <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+    <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
+  </head>
+  <body>
+    <div id="map" style="height: 80vh"></div>
+    <script>
+      // Maplibreのスタイルについて
+      // https://maplibre.org/maplibre-style-spec/
+      // {
+      //   "version": 8,
+      //   "name": "MapLibre Demo Tiles",
+      //   "sprite": "mapbox://sprites/mapbox/streets-v8",
+      //   "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+      //   "sources": {... },
+      //   "layers": [...]
+      // }
+      const rastertileUrl = 'http://localhost:8000/tiles2/{z}/{x}/{y}.png';
+      const map = new maplibregl.Map({
+        container: 'map',
+        center: [136.0881, 35.2406],
+        zoom: 8,
+        style: {
+          version: 8,
+          sources: {
+            naturalearth: {
+              type: 'raster', // ラスタータイル
+              tiles: [
+                rastertileUrl,
+              ],
+              tileSize: 256,
+              maxzoom: 12,
+              attribution: '&copy; <a href="https://www.naturalearthdata.com">Natural Earth</a>'
+            },
+          },
+          layers: [
+            {
+              id: 'naturalearth-layer',
+              source: 'naturalearth',
+              type: 'raster',
+            }
+          ]
+        }
+      });
+    </script>
+  </body>
+</html>
