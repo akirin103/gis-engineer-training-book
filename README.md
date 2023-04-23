@@ -21,7 +21,28 @@ $ python -m http.server
 $ python server.py
 ```
 
+<br />
+
+## 学習メモ
+### ベクトルタイル化
+ベクトルデータにタイル処理(大きな位置情報データをタイル状に分割)を行い、通信量を大幅に少なくすることが可能。  
+tippecanoe(ティッピカノー)コマンドを使用して、以下のようにベクトルタイル化が可能。  
+
+```
+# 使用例
+$ tippecanoe -e tiles ./geojson/N03-21_210101.geojson -l admin ab -z8 -pC -P
+
+# -e tiles ... ベクトルタイルを出力するディレクトリのパス
+# ./geojson/N03-21_210101.geojson ... 変換対象となるGeoJSONファイルのパス
+# -l admin ab ... 出力されるベクトルタイルのレイヤー名。複数回使用することで複数のレイヤーを指定可能
+# -z8	... ズームレベル8でタイルを生成
+# -pC	... 圧縮アルゴリズムとしてgzipを使用。複数回使用することで、複数の圧縮アルゴリズムを指定可能
+# -P ... 処理中に進捗状況を表示
+```
+
+<br />
+
 ## 参考
 [Leaflet](https://leafletjs.com/)  
-[MapLibre GL JS](https://maplibre.org/maplibre-gl-js-docs/api/)  
+[MapLibre GL JS](https://maplibre.org/maplibre-gl-js-docs/api/)
 
