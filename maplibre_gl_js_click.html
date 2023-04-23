@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>maplibre gl js vector tile</title>
+    <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+    <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
+  </head>
+  <body>
+    <div id="map" style="height: 80vh"></div>
+    <script>
+      const vectortileUrl = 'http://localhost:8000/tiles/{z}/{x}/{y}.pbf';
+
+      // Maplibreのスタイルについて
+      // https://maplibre.org/maplibre-style-spec/
+      // {
+      //   "version": 8,
+      //   "name": "MapLibre Demo Tiles",
+      //   "sprite": "mapbox://sprites/mapbox/streets-v8",
+      //   "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+      //   "sources": {... },
+      //   "layers": [...]
+      // }
+
+      const map = new maplibregl.Map({
+        container: 'map',
+        center: [137.1, 36.5],
+        zoom: 4,
+        style: {
+          version: 8,
+          sources: {
+            osm: {
+              type: 'raster', // ラスタータイル
+              tiles: [
+                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              ],
+              tileSize: 256,
+            },
+            admin: {
+              type: 'vector',
+              tiles: [vectortileUrl],
+              maxzoom: 8,
+            },
+          },
+          layers: [
+            {
+              id: 'osm-layer',
+              source: 'osm',
+              type: 'raster'
+            },
+            {
+              id: 'admin-layer',
+              source: 'admin',
+              'source-layer': 'admin',
+              type: 'fill',
+              paint: {
+                'fill-color': '#fa0',
+                'fill-opacity': 0.5,
+                'fill-outline-color': '#00f',
+              },
+            },
+          ]
+        }
+      });
+      
+      map.on('click', (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ['admin-layer'],
+        });
+        if (features.length == 0) return;
+        const feature = features[0];
+        alert(
+          `${feature.properties.N03_007}:${feature.properties.N03_001}${feature.properties.N03_004}`
+        );
+      })
+    </script>
+  </body>
+</html>
